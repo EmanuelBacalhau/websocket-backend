@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  avatarUrl String?  @map("avatar_id")
+  username  String   @unique
+  password  String
+  phone     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  sentPrivates     Private[] @relation("sent")
+  receiverPrivates Private[] @relation("receiver")
+  groups           Member[]
+
+  privateMessages PrivateMessage[]
+  groupMessages   GroupMessage[]
+
+  @@map("users")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String   @map("user_id")
+  phone     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("contacts")
+}
+
+model Private {
+  id         String   @id @default(cuid())
+  sentId     String   @map("sent_id")
+  receiverId String   @map("receiver_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  sent     User @relation(name: "sent", fields: [sentId], references: [id])
+  receiver User @relation(name: "receiver", fields: [receiverId], references: [id])
+
+  messages PrivateMessage[]
+
+  @@map("privates")
+}
+
+model PrivateMessage {
+  id        String   @id @default(cuid())
+  authorId  String   @map("author_id")
+  privateId String   @map("private_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  author  User    @relation(fields: [authorId], references: [id])
+  private Private @relation(fields: [privateId], references: [id])
+
+  @@map("private_messages")
+}
+
+model Group {
+  id             String   @id @default(cuid())
+  adminId        String   @map("admin_id")
+  profilePicture String?  @map("profile_picture")
+  name           String
+  description    String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  members  Member[]
+  messages GroupMessage[]
+
+  @@map("groups")
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  groupId   String   @map("group_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  @@map("members")
+}
+
+model GroupMessage {
+  id        String   @id @default(cuid())
+  authorId  String   @map("author_id")
+  groupId   String   @map("group_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  author User  @relation(fields: [authorId], references: [id])
+  group  Group @relation(fields: [groupId], references: [id])
+
+  @@map("group_messages")
+}
