@@ -5,11 +5,16 @@ interface IRequest {
   userId: string
 }
 
-class DisableUserService {
+class DetailsUserService {
   async execute(data: IRequest) {
     const userExists = await prisma.user.findUnique({
       where: {
         id: data.userId,
+      },
+      select: {
+        avatarUrl: true,
+        username: true,
+        phone: true,
       },
     })
 
@@ -17,15 +22,8 @@ class DisableUserService {
       throw new AppError('User not found', 404)
     }
 
-    await prisma.user.update({
-      where: {
-        id: data.userId,
-      },
-      data: {
-        active: false,
-      },
-    })
+    return userExists
   }
 }
 
-export default new DisableUserService()
+export default new DetailsUserService()

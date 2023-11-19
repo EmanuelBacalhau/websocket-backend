@@ -1,6 +1,6 @@
 import { hashSync } from 'bcrypt'
-import { AppError } from '../../../libs/app-error'
 import { prisma } from '../../../libs/prisma'
+import { AppError } from '../../../libs/app-error'
 
 interface IRequest {
   username: string
