@@ -1,3 +1,4 @@
+import { hashSync } from 'bcrypt'
 import { AppError } from '../../../libs/app-error'
 import { prisma } from '../../../libs/prisma'
 
@@ -25,11 +26,14 @@ class CreateUserService {
       throw new AppError('User already exists', 409)
     }
 
-    const user = await prisma.user.create({
-      data,
-    })
+    const hashPassword = hashSync(data.password, 10)
 
-    return user
+    await prisma.user.create({
+      data: {
+        ...data,
+        password: hashPassword,
+      },
+    })
   }
 }
 

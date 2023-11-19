@@ -12,9 +12,9 @@ class CreateUserController {
 
     const data = userSchema.parse(req.body)
 
-    const response = await createUserService.execute(data)
+    await createUserService.execute(data)
 
-    return res.status(201).json(response)
+    return res.status(201).end()
   }
 }
 
