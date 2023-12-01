@@ -28,6 +28,7 @@ class AuthService {
     }
 
     const payload = {
+      id: isAuthExists.id,
       name: isAuthExists.username,
     }
 
