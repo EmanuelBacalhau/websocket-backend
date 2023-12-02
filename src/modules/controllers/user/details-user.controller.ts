@@ -4,11 +4,7 @@ import detailsUserService from '../../services/user/details-user.service'
 
 class DetailsUserController {
   async handle(req: Request, res: Response) {
-    const detailsSchema = z.object({
-      id: z.string().cuid(),
-    })
-
-    const { id } = detailsSchema.parse(req.params)
+    const id = req.userId
 
     const response = await detailsUserService.execute({ userId: id })
 

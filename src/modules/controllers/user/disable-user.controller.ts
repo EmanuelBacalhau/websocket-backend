@@ -4,11 +4,7 @@ import disableUserService from '../../services/user/disable-user.service'
 
 class DisableUserController {
   async handle(req: Request, res: Response) {
-    const disableSchema = z.object({
-      id: z.string().cuid(),
-    })
-
-    const { id } = disableSchema.parse(req.params)
+    const id = req.userId
 
     await disableUserService.execute({ userId: id })
 

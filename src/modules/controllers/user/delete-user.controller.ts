@@ -4,11 +4,7 @@ import deleteUserService from '../../services/user/delete-user.service'
 
 class DeleteUserController {
   async handle(req: Request, res: Response) {
-    const deleteSchema = z.object({
-      id: z.string().cuid(),
-    })
-
-    const { id } = deleteSchema.parse(req.params)
+    const id = req.userId
 
     await deleteUserService.execute({ userId: id })
 
