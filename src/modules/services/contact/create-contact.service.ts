@@ -21,12 +21,12 @@ class CreateContactService {
 
     const isContactExists = await prisma.contact.findFirst({
       where: {
-        userId,
         phone,
+        userId,
       },
     })
 
-    if (!isContactExists) {
+    if (isContactExists) {
       throw new AppError('You already have this contact', 409)
     }
 
