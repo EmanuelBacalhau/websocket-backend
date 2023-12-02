@@ -1,4 +1,5 @@
 import { prisma } from '../../../libs/prisma'
+import detailsUserService from '../user/details-user.service'
 
 interface IRequest {
   userId: string
@@ -6,7 +7,7 @@ interface IRequest {
 
 class ListContactService {
   async execute({ userId }: IRequest) {
-    const isUserExists = await prisma.contact.findMany({
+    const contacts = await prisma.contact.findMany({
       where: {
         userId,
       },
@@ -14,10 +15,15 @@ class ListContactService {
         id: true,
         name: true,
         phone: true,
+        user: {
+          select: {
+            avatarUrl: true,
+          },
+        },
       },
     })
 
-    return isUserExists
+    return contacts
   }
 }
 
